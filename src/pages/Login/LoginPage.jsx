@@ -13,10 +13,12 @@ import { Link } from "react-router-dom";
 import useChangeTitle from "@/hooks/useChangeTitle";
 import useTogglePassword from "@/hooks/useTogglePassword";
 import { Eye, EyeOff } from "lucide-react";
+import useLogin from "@/hooks/useLogin";
 
 const LoginPage = () => {
   useChangeTitle("ClientFlow | Login");
   const { showPass, icon, handleTogglePassword } = useTogglePassword();
+  const { formData, handleSubmitForm, handleInputChange, loading } = useLogin();
 
   return (
     <>
@@ -37,6 +39,7 @@ const LoginPage = () => {
                     id="email"
                     type="email"
                     placeholder="name@example.com"
+                    onChange={handleInputChange}
                   />
                 </div>
               </div>
@@ -49,6 +52,7 @@ const LoginPage = () => {
                     id="password"
                     type={showPass ? "password" : "text"}
                     placeholder="********"
+                    onChange={handleInputChange}
                   />
                   <div className="absolute top-8 right-2 cursor-pointer">
                     {icon ? (
@@ -70,7 +74,15 @@ const LoginPage = () => {
             </form>
           </CardContent>
           <CardFooter className="flex-col">
-            <Button className="w-full">Login</Button>
+            <Button
+              className="w-full"
+              onClick={handleSubmitForm}
+              disabled={
+                loading || !formData.email || formData.password.length < 8
+              }
+            >
+              {loading ? "Please wait..." : "Login"}
+            </Button>
             <Separator className="mt-4 mb-2" />
             <p>
               Don't have an account?{" "}

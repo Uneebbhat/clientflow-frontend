@@ -13,10 +13,18 @@ import { Link } from "react-router-dom";
 import useChangeTitle from "@/hooks/useChangeTitle";
 import { Eye, EyeOff } from "lucide-react";
 import useTogglePassword from "@/hooks/useTogglePassword";
+import useSignup from "@/hooks/useSignup";
 
 const SignupPage = () => {
   useChangeTitle("ClientFlow | Create an account");
   const { showPass, icon, handleTogglePassword } = useTogglePassword();
+  const {
+    handleInputChange,
+    handleImageChange,
+    handleSubmitForm,
+    formData,
+    loading,
+  } = useSignup();
 
   return (
     <>
@@ -31,7 +39,12 @@ const SignupPage = () => {
             <form className="flex-col">
               <div>
                 <Label htmlFor="profilePic">Profile picture:</Label>
-                <Input name="profilePic" id="profilePic" type="file" />
+                <Input
+                  name="profilePic"
+                  id="profilePic"
+                  type="file"
+                  onChange={handleImageChange}
+                />
               </div>
 
               <div className="name-email flex flex-col sm:flex-row gap-2 mt-2">
@@ -42,6 +55,7 @@ const SignupPage = () => {
                     id="name"
                     type="text"
                     placeholder="John Doe"
+                    onChange={handleInputChange}
                   />
                 </div>
                 <div className="flex-1">
@@ -51,6 +65,7 @@ const SignupPage = () => {
                     id="email"
                     type="email"
                     placeholder="name@example.com"
+                    onChange={handleInputChange}
                   />
                 </div>
               </div>
@@ -63,6 +78,7 @@ const SignupPage = () => {
                     id="password"
                     type={showPass ? "password" : "text"}
                     placeholder="********"
+                    onChange={handleInputChange}
                   />
                   <div className="absolute top-8 right-2 cursor-pointer">
                     {icon ? (
@@ -72,19 +88,22 @@ const SignupPage = () => {
                     )}
                   </div>
                 </div>
-                <div className="mt-2">
-                  <Link
-                    className="text-slate-950 font-medium text-[14px] underline"
-                    to="/forgot-password"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
               </div>
             </form>
           </CardContent>
           <CardFooter className="flex-col">
-            <Button className="w-full">Register</Button>
+            <Button
+              className="w-full"
+              onClick={handleSubmitForm}
+              disabled={
+                loading ||
+                !formData.name ||
+                !formData.email ||
+                formData.password.length < 8
+              }
+            >
+              {loading ? "Please wait..." : "Register"}
+            </Button>
             <Separator className="mt-4 mb-2" />
             <p>
               Already have an account?{" "}
