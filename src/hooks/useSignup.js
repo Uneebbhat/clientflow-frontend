@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import axios from "axios";
 
 const useSignup = () => {
   const [formData, setFormData] = useState({
@@ -30,11 +31,16 @@ const useSignup = () => {
       signupForm.append("email", formData.email);
       signupForm.append("password", formData.password);
 
+      const result = await axios.post("/api/v1/signup", signupForm);
+
+      setFormData(result.data.data);
+      console.log(result.data.data);
+
       toast({
         title: "Account created successfully",
       });
 
-      console.log(formData);
+      // console.log(formData);
       setLoading(false);
     } catch (e) {
       console.log("Error: ", e);
