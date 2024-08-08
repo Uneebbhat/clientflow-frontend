@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import axios from "axios";
 
 const useLogin = () => {
   const [formData, setFormData] = useState({
@@ -14,18 +15,20 @@ const useLogin = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmitForm = (e) => {
+  const handleSubmitForm = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      console.log(formData);
+      const result = await axios.post("/api/v1/login", formData);
+      console.log(result.data.data);
+      setFormData(result.data.data);
+
       setLoading(false);
       toast({
         title: "Login successfully",
       });
     } catch (e) {
       setLoading(false);
-      console.log("Error: ", e);
     }
   };
 
